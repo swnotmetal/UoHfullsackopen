@@ -27,13 +27,6 @@ const Blog = forwardRef(({blog, user, addingLikes, deleteBlog}, ref) => {
     toggleVisibility
   }))
 
-  const handleLike = (event) => {
-    event.preventDefault()
-    addingLikes({
-      id: blog.id, 
-      likes: blog.likes + 1
-    })
-  }
   const handleDelete = async() => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       await dispatch(deleteBlogs(blog.id))
@@ -55,7 +48,7 @@ const Blog = forwardRef(({blog, user, addingLikes, deleteBlog}, ref) => {
         <p>Author: {blog.author}</p>
         <p>Url: {blog.url}</p>
         <p>Likes: {blog.likes}
-        <button onClick={handleLike} id="like-button">like</button>
+     
         </p>
         <p>{blog.user !== null && blog.user.name}</p>
         <button onClick={handleDelete} id="remove-button">

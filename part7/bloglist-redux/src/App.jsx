@@ -1,23 +1,38 @@
 import React from 'react'
 import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import { useDispatch } from 'react-redux'
-import { castingLikes, createBlogs, deleteBlogs, initialBlogs } from './reducers/blogReducer'
+import { createBlogs, deleteBlogs, initialBlogs } from './reducers/blogReducer'
 import { useSelector } from 'react-redux'
 import { initialUsersAll } from './reducers/userReducer'
 import { logIn, logOut, userInitial } from './reducers/authenReducer'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import UsersToShow from './components/userToShow'
+import UserIndividuals from './components/IndividiualUser'
+import { showNotification } from './reducers/notificationReducer'
+import BlogIndividuals from './components/IndividiualBlog'
+import BlogToShow from './components/BlogToShow'
 
+const NavigationBar = () => {
+  return (
+    <nav>
+      <ul>
+        <li><Link to="/">Blogs</Link></li> 
+        <li><Link to="/users">Users</Link></li>       
+      </ul>
+    </nav>
+  );
+};
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
   const authenUser = useSelector(state => state.authenUser)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [sortedBlogs, setSortedBlogs] = useState([])
+  //const [sortedBlogs, setSortedBlogs] = useState([])
   const [loginVisible, setLoginVisible] = useState(false)
   
   const dispatch = useDispatch()
@@ -40,7 +55,7 @@ const App = () => {
     }
   }
   
-  const deleteBlog = async (id) => {
+  /*const deleteBlog = async (id) => {
     console.log('AuthenUser:', authenUser);
     if (authenUser) {
       console.log('Deleting blog:', id);
@@ -49,17 +64,22 @@ const App = () => {
       console.log('Unauthorized action: Delete blog');
       dispatch(showNotification('Authentication error'));
     }
+  }*/
+  
+  const Blogs = () => {
+    return (
+      <div>
+        <h2>Blogs</h2>
+        <BlogToShow />
+      </div>
+    )
   }
-  
-  
   
   useEffect(() => {
     // Do something after blogs state changes (force re-render)
   }, [blogs])
-  const addingLikes = async (likeObject) => {
-    dispatch(castingLikes(likeObject))
-  }
-    
+
+
   const handleLogin = async (event) => {
     event.preventDefault()
     dispatch(logIn(username, password))
@@ -73,19 +93,19 @@ const App = () => {
 
   }
 
-  const sortByLikes = () => {
+  /*const sortByLikes = () => {
     return blogs.slice().sort((x, y) => x.likes - y.likes)
-  }
+  }*/
 
 
-  const updateSortedBlogs = () => {
+  /* const updateSortedBlogs = () => {
     const sorting = sortByLikes()
     setSortedBlogs(sorting)
-  }
+  }*/
 
-  useEffect(() => {
+  /*useEffect(() => {
     updateSortedBlogs()
-  }, [blogs])
+  }, [blogs])*/
 
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? 'none': ''}
@@ -117,9 +137,14 @@ const App = () => {
 
   </Togglable>
   )
+  const padding = {
+    padding : 5
+  }
   console.log('userdata', authenUser);
   return (
+
     <div>
+      <NavigationBar />
       <div>
       <Notification />
      </div>
@@ -138,13 +163,15 @@ const App = () => {
             <button onClick={handleLogout}>log out</button>
           </div>
         )}
+      </div>    
+      <div>  
+        <Routes>
+          <Route path='/users' element={<UsersToShow />} />
+          <Route path='/users/:id' element={<UserIndividuals/>}></Route>
+          <Route path='/' element={<Blogs/>}/>
+          <Route path='/blogs/:id' element={<BlogIndividuals />}/>       
+        </Routes>      
       </div>
-    
-      <h2>blogs</h2>
-     
-      {sortedBlogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={authenUser} addingLikes={addingLikes} deleteBlog={deleteBlog}/> 
-      )}
     </div>
   )
   

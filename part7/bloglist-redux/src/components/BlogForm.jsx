@@ -18,7 +18,7 @@ const BlogForm = () => {
     event.preventDefault();
     dispatch(createBlogs(newBlog))
     setNewBlog({ title: '', author: '', url: '' })
-    dispatch(setNotification(`a new blog ${newBlog.title} by ${newBlog.author} added`, 5))
+    dispatch(setNotification(`a new blog ${newBlog.title} by ${newBlog.author} added`, 1))
   }
 
   return (
