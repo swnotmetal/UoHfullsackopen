@@ -4,7 +4,7 @@ import { setNotification } from "../reducers/notificationReducer";
 import { deleteBlogs } from "../reducers/blogReducer";
 
 
-const Blog = forwardRef(({blog, user, addingLikes, deleteBlog}, ref) => {
+const Blog = forwardRef(({blog}, ref) => {
   const [visible, setVisible] = useState(false)
 
   const dispatch = useDispatch()

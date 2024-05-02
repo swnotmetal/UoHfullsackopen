@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { createBlogs } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { Form, Button } from 'react-bootstrap'
 
 
 const BlogForm = () => {
@@ -24,10 +25,10 @@ const BlogForm = () => {
   return (
     <div>
       <h2>Create a new blog</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          Title:
-          <input
+      <Form onSubmit={handleSubmit}>
+        <Form.Group>
+          <Form.Label>Title:</Form.Label>
+          <Form.Control
             type="text"
             value={newBlog.title}
             name="title"
@@ -36,10 +37,10 @@ const BlogForm = () => {
             data-testid='title'
             id='title'
           />
-        </div>
-        <div>
-          Author:
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Author:</Form.Label>
+          <Form.Control
             type="text"
             value={newBlog.author}
             name="author"
@@ -48,10 +49,10 @@ const BlogForm = () => {
             data-testid='author'
             id='author'
           />
-        </div>
-        <div>
-          URL:
-          <input
+        </Form.Group>
+        <Form.Group>
+         <Form.Label>URL:</Form.Label> 
+          <Form.Control
             type="text"
             value={newBlog.url}
             name="url"
@@ -60,9 +61,9 @@ const BlogForm = () => {
             data-testid='url'
             id='url'
           />
-        </div>
-        <button id='create-button' type="submit">create</button>
-      </form>
+        </Form.Group>
+        <Button variant='primary' type="submit">create</Button>
+      </Form>
     </div>
   )
 }

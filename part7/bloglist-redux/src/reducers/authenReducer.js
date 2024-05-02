@@ -6,7 +6,7 @@ import { setNotification } from './notificationReducer'
 
 const authenticationSlice = createSlice({
     name: ' authentication',
-    initialState: [],
+    initialState: null,
     reducers: {
         userAuthentication(state, action) {
             return action.payload

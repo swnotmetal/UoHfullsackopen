@@ -1,59 +1,30 @@
 module.exports = {
     "env": {
-      "browser": true,
-      "commonjs": true,
-      "es2021": true,
-      "node": true,
-      "cypress/globals": true
-    },
-    "rules": {
-      "no-unused-vars": "off"
+        "browser": true,
+        "es2021": true,
+        "node":true
     },
     "extends": "plugin:react/recommended",
     "overrides": [
-      {
-        "env": {
-          "node": true
-        },
-        "files": [
-          ".eslintrc.js",
-          ".eslintrc.cjs"
-        ],
-        "parserOptions": {
-          "sourceType": "script"
+        {
+            "env": {
+                "node": true
+            },
+            "files": [
+                ".eslintrc.{js,cjs}"
+            ],
+            "parserOptions": {
+                "sourceType": "script"
+            }
         }
-      }
     ],
-    "parser": "@babel/eslint-parser", // Added parser here
     "parserOptions": {
-      "ecmaVersion": 2021
+        "ecmaVersion": "latest",
+        "sourceType": "module"
     },
     "plugins": [
-      "@stylistic/js",
-      "react",
-      "jest",
-      "cypress"
+        "react"
     ],
-    "extends": "eslint:recommended",
     "rules": {
-      "@stylistic/js/indent": [
-        "error",
-        2
-      ],
-      "@stylistic/js/linebreak-style": [
-        "error",
-        "unix"
-      ],
-      "@stylistic/js/quotes": [
-        "error",
-        "single"
-      ],
-      "@stylistic/js/semi": [
-        "error",
-        "never"
-      ]
     }
-  }
-  
-  
-      
+}

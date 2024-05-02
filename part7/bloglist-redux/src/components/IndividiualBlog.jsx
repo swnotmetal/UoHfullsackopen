@@ -40,15 +40,15 @@ const BlogIndividuals = () => {
         <table>
           <tbody>
             <tr>
-              <th>URL</th>
+              <th>URL </th>
               <td>{blog.url}</td>
             </tr>
             <tr>
-              <th>Likes</th>
+              <th>Likes </th>
               <td>{blog.likes} <button onClick={handleLike} id="like-button">like</button></td>
             </tr>
             <tr>
-              <th>Author</th>
+              <th>Author </th>
               <td>{blog.author}</td>
             </tr>
           </tbody>

@@ -1,42 +1,56 @@
 import React from 'react'
 import { useState, useEffect, useRef } from 'react'
-import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import { useDispatch } from 'react-redux'
-import { createBlogs, deleteBlogs, initialBlogs } from './reducers/blogReducer'
+import { createBlogs,initialBlogs } from './reducers/blogReducer'
 import { useSelector } from 'react-redux'
 import { initialUsersAll } from './reducers/userReducer'
 import { logIn, logOut, userInitial } from './reducers/authenReducer'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link, redirect as Redirect} from 'react-router-dom'
 import UsersToShow from './components/userToShow'
 import UserIndividuals from './components/IndividiualUser'
 import { showNotification } from './reducers/notificationReducer'
 import BlogIndividuals from './components/IndividiualBlog'
 import BlogToShow from './components/BlogToShow'
+import LoginPage from './components/LogInPage'
 
 const NavigationBar = () => {
+  const navStyle = {
+    display: 'flex',
+    justifyContent: 'space-around',
+    listStyle: 'none',
+    padding: '10px',
+    backgroundColor: '#f3f3f3',
+  };
+
+  const linkStyle = {
+    textDecoration: 'none',
+    color: 'black',
+  };
+
   return (
     <nav>
-      <ul>
-        <li><Link to="/">Blogs</Link></li> 
-        <li><Link to="/users">Users</Link></li>       
+      <ul style={navStyle}>
+        <li><Link style={linkStyle} to="/">Blogs</Link></li> 
+        <li><Link style={linkStyle} to="/users">Users</Link></li>       
       </ul>
     </nav>
   );
 };
 
+
 const App = () => {
   const blogs = useSelector(state => state.blogs)
   const authenUser = useSelector(state => state.authenUser)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  //const [username, setUsername] = useState('')  moved to login page
+  //const [password, setPassword] = useState('') moved
   //const [sortedBlogs, setSortedBlogs] = useState([])
-  const [loginVisible, setLoginVisible] = useState(false)
+  // const [loginVisible, setLoginVisible] = useState(false) aborted
   
   const dispatch = useDispatch()
-  const blogFormRef = useRef()
+  //const blogFormRef = useRef()
   useEffect(() => {
     dispatch(initialBlogs())
     dispatch(userInitial())
@@ -44,7 +58,7 @@ const App = () => {
   }, [dispatch])
   
 
-  const addBlogs = (blogObj) => {
+  /*const addBlogs = (blogObj) => {
     console.log('AuthenUser:', authenUser);
     if (authenUser) {
       console.log('Adding blog:', blogObj);
@@ -53,7 +67,7 @@ const App = () => {
       console.log('Unauthorized action: Add blog');
       dispatch(showNotification('Authentication error'));
     }
-  }
+  }* moved, it relaps with other function/ 
   
   /*const deleteBlog = async (id) => {
     console.log('AuthenUser:', authenUser);
@@ -80,17 +94,10 @@ const App = () => {
   }, [blogs])
 
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    dispatch(logIn(username, password))
-    setUsername('')
-    setPassword('')
-  }
-
   const handleLogout = async (event) => {
     event.preventDefault();
     dispatch(logOut())
-
+ 
   }
 
   /*const sortByLikes = () => {
@@ -107,51 +114,17 @@ const App = () => {
     updateSortedBlogs()
   }, [blogs])*/
 
-  const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none': ''}
-    const showWhenVisible = { display: loginVisible ? '' : 'none'}
 
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={ () => setLoginVisible(true)}> log in</button>
-        </div>
-        <div style={showWhenVisible}>
-          <LoginForm 
-            username={username}
-            password={password}
-            handleUsernameChange={ ({ target }) => 
-            setUsername(target.value)}
-            handlePasswordChange={ ({ target }) => 
-            setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
-          <button onClick={() => setLoginVisible(false)}> cancel</button>
-        </div>
-      </div>
-    )
-  }
-  const newBlogForm = () => (
-    <Togglable buttonLabel = 'new blog' ref={blogFormRef}>
-    <BlogForm createBlog={addBlogs} />
-
-  </Togglable>
-  )
-  const padding = {
-    padding : 5
-  }
-  console.log('userdata', authenUser);
   return (
 
-    <div>
+    <div className='container'>
       <NavigationBar />
       <div>
       <Notification />
      </div>
       <div>
-        <h2>Log into application</h2>
-        {authenUser === null && loginForm()}
-        {authenUser !== null && newBlogForm()} 
+        {authenUser === null && <LoginPage/>}
+        {authenUser !== null && <BlogForm />}
         {authenUser !== null && (
           <div>
             <p>
@@ -166,9 +139,10 @@ const App = () => {
       </div>    
       <div>  
         <Routes>
+          <Route path='/login' element={<LoginPage />} />
           <Route path='/users' element={<UsersToShow />} />
           <Route path='/users/:id' element={<UserIndividuals/>}></Route>
-          <Route path='/' element={<Blogs/>}/>
+          <Route path='/' element={ <Blogs /> }/>
           <Route path='/blogs/:id' element={<BlogIndividuals />}/>       
         </Routes>      
       </div>
