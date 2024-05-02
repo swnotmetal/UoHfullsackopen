@@ -1,0 +1,13 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWQiOiI2NWQ2OTljYTRlMzYwMzE5NDgwMmUzMGQiLCJpYXQiOjE3MDg1NjI5NjV9.sjHs0rp2LFl0e7bxkbSM8QJjCbIsg3h_VJ-lqKRPfGw
+
+{
+
+  "title": "sidoasid",
+  "author": "Bob Cash",
+  "url": "https://example.com/best-liz-lemon-quotes"
+ 
+}
+
+

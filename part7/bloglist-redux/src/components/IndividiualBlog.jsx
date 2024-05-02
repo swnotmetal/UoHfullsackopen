@@ -1,6 +1,9 @@
 import { useDispatch, useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
 import { castingLikes } from "../reducers/blogReducer"
+import BlogComment from "./Comments"
+import { loadComments } from "../reducers/commentReducer"
+import { useEffect } from "react"
 
 const BlogIndividuals = () => {
 
@@ -10,6 +13,13 @@ const BlogIndividuals = () => {
     console.log('id is', id)
     const blog = blogs.find(b => b.id === String(id))
     console.log('the blog fetched is', blog)
+
+    useEffect(() => {
+      if (blog) {
+        // If the blog post is available, load its comments
+        dispatch(loadComments({ id: blog.id }));
+      }
+    }, [dispatch, blog]);
 
     const addingLikes = async (likeObject) => {
       dispatch(castingLikes(likeObject))
@@ -43,6 +53,11 @@ const BlogIndividuals = () => {
             </tr>
           </tbody>
         </table>
+        <div>
+          <ul>
+          <BlogComment id={blog.id}/>
+          </ul>
+        </div>
       </div>
     );
     

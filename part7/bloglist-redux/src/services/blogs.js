@@ -21,6 +21,18 @@ const create = async newObject => {
   return response.data
 }
 
+const getComment = async (id) => {
+  const response = await axios.get(`${baseUrl}/${id}/comments` )
+  return response.data
+}
+
+const toComment = async (id, content) => {
+  const object = { content }
+  const response = await axios.post(`${baseUrl}/${id}/comments`, object)
+  return response.data
+}
+
+
 const updateLikes = async ({ id, likes }) => {
   const data = {
     likes: likes
@@ -38,4 +50,4 @@ const remove = async (id) => {
   const response = await axios. delete(`${baseUrl}/${id}`, config)
   return response.data
 }
-export default { getAll, create, updateLikes, setToken, remove }
+export default { getAll, create, updateLikes, setToken, remove, toComment, getComment }

@@ -50,4 +50,5 @@ export const castingLikes= (id) => {
         dispatch(setBlogs(likedBlog))
     }
 }
+
 export default blogSlice.reducer
