@@ -170,7 +170,7 @@ const resolvers = {
       books = books.concat(book)
 
       const existedAuthor = authors.some(author => author.name === args.author)
-
+      //"some" tests whether at least one element in the array pases the test implemented by the provided function
       if (!existedAuthor) {
         const author = { name:args.author, id: uuid()}
         authors = authors.concat(author)
