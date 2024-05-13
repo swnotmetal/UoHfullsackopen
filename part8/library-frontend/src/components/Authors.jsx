@@ -1,7 +1,9 @@
+import EditAuthor from "./EditAuthor"
 
 
 
 const Authors = (props) => {
+
   if (!props.show) {
     return null
   }
@@ -26,6 +28,8 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+      <h3>set birthyear</h3>
+      <EditAuthor />
     </div>
   )
 }
