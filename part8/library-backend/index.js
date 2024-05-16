@@ -159,7 +159,7 @@ const resolvers = {
         query.genres = {  $elemMatch : {$in: [args.genre]} };
       }
       return await Book.find(query);
-    },
+    },  //at this point the author field is still not functioning at all
     findBook: async (root, args) =>
         Book.findOne({ title: args.title}),
     authorCount: async () => Author.collection.countDocuments(),
@@ -173,7 +173,7 @@ const resolvers = {
   Mutation : {
     addBook: async (root, args) => {
       const author = await Author.findOne({ name: args.author })
- 
+ 	//this is written that the author is already in the db, otherwise the function breaks
       const book = new Book({ ...args, author: author })
       try {        
         await book.save()      
