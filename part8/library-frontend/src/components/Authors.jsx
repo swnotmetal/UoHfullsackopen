@@ -2,12 +2,15 @@ import EditAuthor from "./EditAuthor"
 
 
 
-const Authors = (props) => {
+const Authors = ({show, authors}) => {
 
-  if (!props.show) {
+  if (!show) {
     return null
   }
-  const authors = []
+
+  if (!authors || authors.length === 0) {
+    return <div>No authors found</div>;
+  }
 
   return (
     <div>
@@ -19,7 +22,7 @@ const Authors = (props) => {
             <th>born</th>
             <th>books</th>
           </tr>
-          {props.authors.map((a) => (
+          {authors.map((a) => (
             <tr key={a.name}>
               <td>{a.name}</td>
               <td>{a.born}</td>

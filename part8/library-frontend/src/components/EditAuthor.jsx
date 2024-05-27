@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries';
 import Select from 'react-select';
 
 const options = () => {
     const { loading, error, data } = useQuery(ALL_AUTHORS);
-  
+
     if (loading) return 'Loading...';
     if (error) return `Error! ${error.message}`;
   
