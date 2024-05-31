@@ -82,7 +82,7 @@ export default Recommend*/
 //rolling back to 8.19-20 with local react instead of GraphSL
 
 
-const Recommend = ({ show, favoriteGenre = ['all genres'], books }) => {
+const Recommend = ({ show, favoriteGenre , books }) => {
   if (!show) {
       return null
   }
@@ -114,6 +114,6 @@ const Recommend = ({ show, favoriteGenre = ['all genres'], books }) => {
       </div>
   )
 }
-//favgenre in db is automatically seen as an array, fix it
+
 export default Recommend
 

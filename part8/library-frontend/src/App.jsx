@@ -15,12 +15,14 @@ const App = () => {
   const client = useApolloClient();
   const [page, setPage] = useState("authors");
   const user = useQuery(USER)
-  const books = useQuery(ALL_BOOKS)
-  const authors = useQuery(ALL_AUTHORS)
-  //const { loading: loadingAuthors, data: dataAuthors } = useQuery(ALL_AUTHORS);
-  /*const { loading: loadingBooks, data: dataBooks } = useQuery(ALL_BOOKS, {
-    pollInterval: 2000,
-  })*/
+  //const books = useQuery(ALL_BOOKS)
+  //const authors = useQuery(ALL_AUTHORS)
+  const resultAuthors = useQuery(ALL_AUTHORS ,{
+    pollInterval: 2000
+  })
+  const resultBooks = useQuery(ALL_BOOKS, {
+    pollInterval: 2000
+  })
 
   const notify = (message) => {
     setErrorMessage(message);
@@ -35,8 +37,8 @@ const App = () => {
     client.clearStore();
   };
 
-  if (authors.loading|| books.loading) {
-    return <div>loading...</div>;
+  if (resultBooks.loading || resultAuthors.loading) {
+    return <div>loading...</div>
   }
 
   if (!token) {
@@ -48,9 +50,12 @@ const App = () => {
       </div>
     );
   }
+
+  console.log('authors', resultAuthors.data.allAuthors)
+  console.log('books', resultBooks.data.allBooks)
   console.log("User Data:", user)
   console.log("fav:",user.data.me.favoriteGenre)
-  const favoriteGenre = user.data.me.favoriteGenre || 'all genres';
+  const favoriteGenre = user.data.me.favoriteGenre
 
   return (
     <div>
@@ -62,9 +67,9 @@ const App = () => {
         <button onClick={logout}>logout</button>
       </div>
 
-      <Authors show={page === "authors"} authors={authors.data.allAuthors} />
-      <Books show={page === "books" } books={books.data.allBooks}/>
-      <Recommend show={page === "recommend"} favoriteGenre={favoriteGenre} books={books.data.allBooks} />
+      <Authors show={page === "authors"} authors={resultAuthors.data.allAuthors} />
+      <Books show={page === "books" } books={resultBooks.data.allBooks}/>
+      <Recommend show={page === "recommend"} favoriteGenre={favoriteGenre} books={resultBooks.data.allBooks} />
       <NewBook show={page === "add"} setError={notify} />
     </div>
   );
