@@ -25,93 +25,14 @@ mongoose.connect(MONGODB_URI)
   })
 
 
-/*let authors = [
-  {
-    name: 'Robert Martin',
-    id: "afa51ab0-344d-11e9-a414-719c6709cf3e",
-    born: 1952,
-  },
-  {
-    name: 'Martin Fowler',
-    id: "afa5b6f0-344d-11e9-a414-719c6709cf3e",
-    born: 1963
-  },
-  {
-    name: 'Fyodor Dostoevsky',
-    id: "afa5b6f1-344d-11e9-a414-719c6709cf3e",
-    born: 1821
-  },
-  { 
-    name: 'Joshua Kerievsky', // birthyear not known
-    id: "afa5b6f2-344d-11e9-a414-719c6709cf3e",
-  },
-  { 
-    name: 'Sandi Metz', // birthyear not known
-    id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
-  },
-]*/
-
-/*let books = [
-  {
-    title: 'Clean Code',
-    published: 2008,
-    author: 'Robert Martin',
-    id: "afa5b6f4-344d-11e9-a414-719c6709cf3e",
-    genres: ['refactoring']
-  },
-  {
-    title: 'Agile software development',
-    published: 2002,
-    author: 'Robert Martin',
-    id: "afa5b6f5-344d-11e9-a414-719c6709cf3e",
-    genres: ['agile', 'patterns', 'design']
-  },
-  {
-    title: 'Refactoring, edition 2',
-    published: 2018,
-    author: 'Martin Fowler',
-    id: "afa5de00-344d-11e9-a414-719c6709cf3e",
-    genres: ['refactoring']
-  },
-  {
-    title: 'Refactoring to patterns',
-    published: 2008,
-    author: 'Joshua Kerievsky',
-    id: "afa5de01-344d-11e9-a414-719c6709cf3e",
-    genres: ['refactoring', 'patterns']
-  },  
-  {
-    title: 'Practical Object-Oriented Design, An Agile Primer Using Ruby',
-    published: 2012,
-    author: 'Sandi Metz',
-    id: "afa5de02-344d-11e9-a414-719c6709cf3e",
-    genres: ['refactoring', 'design']
-  },
-  {
-    title: 'Crime and punishment',
-    published: 1866,
-    author: 'Fyodor Dostoevsky',
-    id: "afa5de03-344d-11e9-a414-719c6709cf3e",
-    genres: ['classic', 'crime']
-  },
-  {
-    title: 'Demons',
-    published: 1872,
-    author: 'Fyodor Dostoevsky',
-    id: "afa5de04-344d-11e9-a414-719c6709cf3e",
-    genres: ['classic', 'revolution']
-  },
-]*/
-
-
-
 const typeDefs = `
 
 type User {
   username: String!
-  favoriteGenre: String!
+  favoriteGenre: [String!]!
   id: ID!
 }
+
 
 type Token {
   value: String!
@@ -145,7 +66,7 @@ type Mutation {
   ): Author
   createUser (
     username:String!
-    favoriteGenre: String!
+    favoriteGenre: [String!]!
   ): User
   login(
     username:String!
@@ -156,7 +77,7 @@ type Mutation {
 
 type Query {
   bookCount: Int
-  allBooks(author: String, genre: String): [Book!]!
+  allBooks(author: String, genre: String): [Book!]
   findBook(title: String!): Book
   authorCount: Int
   allAuthors: [Author!]!
@@ -169,16 +90,20 @@ const resolvers = {
   Query: {
     bookCount: async () => Book.collection.countDocuments(),
     allBooks: async (root, args) => {
-      let query = {};
+      if (Object.keys(args).length === 0) {
+        return Book.find({})
+      }
+      if (args.author && args.genre) {
+        const author = await Author.findOne({ name: args.author })
+        return Book.find({ author: author.id, genres: { $in: [args.genre] } })
+      }
       if (args.author) {
-        query.author = args.author;
+        const author = await Author.findOne({ name: args.author })
+        return Book.find({ author: author.id })
       }
       if (args.genre) {
-        query.genres = { $elemMatch: { $in: [args.genre] } };
+        return Book.find({ genres: { $in: [args.genre] } })
       }
-      const books = await Book.find(query).populate('author');
-      console.log('Books with authors populated:', books);
-      return books.filter(book => book.author && book.author.name);
     },
     
     findBook: async (root, args) => Book.findOne({ title: args.title }).populate('author'),
@@ -193,6 +118,12 @@ const resolvers = {
      return foundBooks.length
     }
    },
+  Book: {
+    author: async(root) => {
+      const author = await Author.findOne({_id: root.author})
+      return author
+    }
+  },
 
   
   Mutation : {
@@ -264,19 +195,17 @@ const resolvers = {
     }, //updating author through id and using $set to slove updating born as null in db
     
     createUser: async (root, args) => {
-      const user = new User({ username: args.username })
-  
-      return user.save()
-        .catch(error => {
-          throw new GraphQLError('Creating the user failed', {
-            extensions: {
-              code: 'BAD_USER_INPUT',
-              invalidArgs: args.username,
-              error
-            }
-          })
+      const user = new User({ ...args, favoriteGenre: args.favoriteGenre.split(',') })
+      try {
+        await user.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
         })
+      }
+      return user
     },
+    
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username })
   
@@ -303,6 +232,7 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+
 })
 
 startStandaloneServer(server, {

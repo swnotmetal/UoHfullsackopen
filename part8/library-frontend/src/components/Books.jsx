@@ -1,24 +1,35 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useQuery } from '@apollo/client';
+import { ALL_BOOKS } from '../queries';
 
 const Books = ({ show, books }) => {
+  const [filter, setFilter] = useState(['all genres']);
+  /*const { loading, data, refetch } = useQuery(ALL_BOOKS, {
+    variables: { genre: genreFilter },
+  })*/ // rolling back from GraphQL to local react pre-set genres
+  
+  const genres = ["IT", "Tech", "Business", "Si-Fi", "crime", "classic", "all genres"]
+
+
   if (!show) {
     return null;
   }
 
-  const [genreFilter, setGenreFilter] = useState(null);
+  /*if (loading) {
+    return <div>Loading...</div>;
+  }*/
 
-  const handleFilter = (genre) => {
-    setGenreFilter(genre);
-  };
+  //const books = data.allBooks;
+  //const genresUniq = [...new Set(books.flatMap((b) => b.genres))];
 
-  // Extract unique genres from the books array
-  const genresUniq = [...new Set(books.flatMap(b => b.genres))];
+  /*const handleFilter = (genre) => {
+    setFilter(genre);
+    refetch({ genre })
+  }*/
 
-  // Filter books based on the selected genre
-  const filteredBooks = genreFilter
-    ? books.filter(b => b.genres.includes(genreFilter))
-    : books;
-
+  const filteredBooks = filter.includes('all genres') 
+  ? books 
+  : books.filter(book => book.genres.some(genre => filter.includes(genre)))
   return (
     <div>
       <h2>Books</h2>
@@ -33,7 +44,7 @@ const Books = ({ show, books }) => {
         </thead>
         <tbody>
           {filteredBooks.map((book) => (
-            <tr key={book.title}>
+            <tr key={book.id}>
               <td>{book.title}</td>
               <td>{book.author.name}</td>
               <td>{book.published}</td>
@@ -43,13 +54,12 @@ const Books = ({ show, books }) => {
       </table>
 
       <div>
-        <h3>Filter by genre</h3>
-        {genresUniq.map((genre) => (
-          <button key={genre} onClick={() => handleFilter(genre)}>
+        {genres.map((genre) => (
+          <button key={genre} onClick={() => setFilter(genre)}>
             {genre}
           </button>
         ))}
-        <button onClick={() => setGenreFilter(null)}>All</button>
+
       </div>
     </div>
   );
