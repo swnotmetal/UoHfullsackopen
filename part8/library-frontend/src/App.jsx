@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useApolloClient, useQuery } from '@apollo/client';
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client';
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
@@ -7,8 +7,24 @@ import Recommend from "./components/Recommend"
 
 import LoginForm from "./components/LoginForm";
 import Notify from "./components/Notify";
-import { ALL_AUTHORS, ALL_BOOKS, USER } from "./queries";
+import { ALL_AUTHORS, ALL_BOOKS, USER, BOOK_ADDED } from "./queries";
 
+
+export const updateCache = (cache, query, addedBook) => {
+  const uniqByTitle = (a) => {
+    let seen = new Set()
+    return a.filter((item) => {
+      let k = item.title
+      return seen.has(k) ? false : seen.add(k)
+    })
+  }
+
+  cache.updateQuery(query, ({ allBooks }) => {
+    return {
+      allBooks: uniqByTitle(allBooks.concat(addedBook)),
+    }
+  })
+}
 const App = () => {
   const [token, setToken] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -24,6 +40,13 @@ const App = () => {
     pollInterval: 2000
   })
 
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded
+      notify(`${addedBook.title} by ${addedBook.author.name} is added`)
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
+    },
+  })
   const notify = (message) => {
     setErrorMessage(message);
     setTimeout(() => {

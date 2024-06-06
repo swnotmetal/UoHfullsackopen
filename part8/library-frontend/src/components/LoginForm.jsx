@@ -9,7 +9,7 @@ const LoginForm = ({ setrError, setToken }) => {
 
     const [login, result ] = useMutation(LOGIN, {
         onError: (error) => {
-            setrError(error,GraphQLErrors[0].message)
+            setrError(error.graphQLErrors[0].message)
         }
     })
 
