@@ -12,6 +12,8 @@ const jwt = require('jsonwebtoken')
 const { WebSocketServer } = require('ws')
 const { useServer } = require('graphql-ws/lib/use/ws')
 
+const { bookLoader } = require('./bookLoader')
+
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
 
@@ -31,7 +33,7 @@ mongoose.connect(MONGODB_URI)
     console.log('error connection to MongoDB:', error.message)
   })
 
-
+  mongoose.set('debug', true);
 const start = async () => {
   const app = express ()
   const httpServer = http.createServer(app)
@@ -73,7 +75,7 @@ const start = async () => {
         if (auth && auth.startsWith('Bearer ')) {
           const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
           const currentUser = await User.findById(decodedToken.id)
-          return { currentUser}
+          return { currentUser, bookLoader:bookLoader() }
         }
       }
     })

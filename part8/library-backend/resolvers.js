@@ -34,10 +34,9 @@ const resolvers = {
       me: (root, args, context) => context.currentUser,
     },
     Author: {
-      bookCount: async(root) => {
-       const foundAuthor = await Author.findOne({ name: root.name })
-       const foundBooks = await Book.find({ author : foundAuthor.id })
-       return foundBooks.length
+      bookCount: async(root, args, context ) => {
+      const books = await context.bookLoader.load(root.id)
+      return books.length
       }
      },
     Book: {
