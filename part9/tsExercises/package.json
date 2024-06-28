@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "ts-node": "ts-node",
     "bmical": "ts-node bmiCalculator.ts",
-    "execal": "ts-node exerciseCalculator.ts"
+    "execal": "ts-node exerciseCalculator.ts",
+    "start": "ts-node index.ts",
+    "dev": "ts-node-dev index.ts"
   },
   "keywords": [
     "typescript"
@@ -15,7 +17,12 @@
   "author": "sw",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.5.2"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
   }
 }
