@@ -1,7 +1,27 @@
+interface MultiplyValues {
+    value1: number;
+    value2: number;
+}
+
+
+const parseArguments = (args: string[]): MultiplyValues => {
+    console.log('Value 1:', args[2]);
+    console.log('Value 2:', args[3]);
+    if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+        return {
+          value1: Number(args[2]),
+          value2: Number(args[3])
+        }
+      } else {
+        throw new Error('Provided values were not numbers!');
+      }
+
+}
 
 
 const bmiCalculate = (mass: number, height: number): string => {
-    const bmi = mass / (height * height);  
+    const heightInMeters = height / 100; 
+    const bmi = mass / (heightInMeters * heightInMeters)  
     
     if (bmi < 16.0) return 'Underweight (Severe thinness)';
     if (bmi >= 16.0 && bmi <= 16.9) return 'Underweight (Moderate thinness)';
@@ -13,6 +33,15 @@ const bmiCalculate = (mass: number, height: number): string => {
     return 'Obese (Class III)';  
 }
 
-const mass = 100;  
-const height = 1.86;  
-console.log(bmiCalculate(mass, height));
+try {
+    const  {value1, value2} = parseArguments(process.argv);
+    const result = bmiCalculate(value1, value2);
+    console.log('BMI Category:', result);
+
+} catch (error: unknown) {
+    let errorMessage = "soemthing bad happaned."
+    if (error instanceof Error ) {
+        errorMessage += 'Error: ' + error.message;
+    }
+    console.log(errorMessage);
+}
