@@ -31,6 +31,8 @@ const bmiCalculate = (mass: number, height: number): string => {
     if (bmi >= 30.0 && bmi <= 34.9) return 'Obese (Class I)';
     if (bmi >= 35.0 && bmi <= 39.9) return 'Obese (Class II)';
     return 'Obese (Class III)';  
+
+    
 }
 
 try {
@@ -39,6 +41,7 @@ try {
     console.log('BMI Category:', result);
 
 } catch (error: unknown) {
+ 
     let errorMessage = "soemthing bad happaned."
     if (error instanceof Error ) {
         errorMessage += 'Error: ' + error.message;
