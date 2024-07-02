@@ -11,17 +11,17 @@ const parseArguments = (args: string[]): MultiplyValues => {
         return {
           value1: Number(args[2]),
           value2: Number(args[3])
-        }
+        };
       } else {
         throw new Error('Provided values were not numbers!');
       }
 
-}
+};
 
 
 const bmiCalculate = (mass: number, height: number): string => {
     const heightInMeters = height / 100; 
-    const bmi = mass / (heightInMeters * heightInMeters)  
+    const bmi = mass / (heightInMeters * heightInMeters);  
     
     if (bmi < 16.0) return 'Underweight (Severe thinness)';
     if (bmi >= 16.0 && bmi <= 16.9) return 'Underweight (Moderate thinness)';
@@ -33,7 +33,7 @@ const bmiCalculate = (mass: number, height: number): string => {
     return 'Obese (Class III)';  
 
     
-}
+};
 
 try {
     const  {value1, value2} = parseArguments(process.argv);
@@ -42,11 +42,11 @@ try {
 
 } catch (error: unknown) {
  
-    let errorMessage = "soemthing bad happaned."
+    let errorMessage = "soemthing bad happaned.";
     if (error instanceof Error ) {
         errorMessage += 'Error: ' + error.message;
     }
     console.log(errorMessage);
 }
 
-export default bmiCalculate
+export default bmiCalculate;

@@ -9,7 +9,8 @@
     "bmical": "ts-node bmiCalculator.ts",
     "execal": "ts-node exerciseCalculator.ts",
     "start": "ts-node index.ts",
-    "dev": "ts-node-dev index.ts"
+    "dev": "ts-node-dev index.ts",
+    "lint": "eslint --ext .ts ."
   },
   "keywords": [
     "typescript"
@@ -18,9 +19,12 @@
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "@typescript-eslint/eslint-plugin": "^7.15.0",
+    "@typescript-eslint/parser": "^7.15.0",
+    "eslint": "^8.57.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.5.2"
+    "typescript": "^5.5.3"
   },
   "dependencies": {
     "express": "^4.19.2"
