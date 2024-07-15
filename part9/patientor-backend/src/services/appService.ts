@@ -3,35 +3,41 @@ import patientData from '../../data/patients';
 import { v1 as uuid } from 'uuid';
 
 
-import { DiagnoseEntry, NonSensitivePatientEntry, NewPatientInput } from '../types';
+import { DiagnoseEntry, NewPatientInput, NoSsnPatient, PatientEntry } from '../types';
 
 const getDiagonse = (): DiagnoseEntry[] => {
     return diagnosedata;
 };
 
-const getNonsensitivePatientEntry = () : NonSensitivePatientEntry[] => {
-    return patientData.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+const getNonsensitivePatientEntry = () : NoSsnPatient[] => {
+    return patientData.map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({
         id,
         name,
         dateOfBirth,
         gender,
         occupation,
+        entries
     }));
 };
 
-const addPatient = (entry: NewPatientInput): NonSensitivePatientEntry => {
-    const NewPatientEntry = {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-        id: uuid(),
-        ...entry
+const addPatient = (entry: NewPatientInput): PatientEntry => {
+    const newPatientEntry = {
+      id: uuid(),
+      ...entry,
+      entries: [] 
     };
-    patientData.push(NewPatientEntry);
+    patientData.push(newPatientEntry);
+    return newPatientEntry;
+  };
 
-    return NewPatientEntry;
+const findById = (id: string): PatientEntry | undefined => {
+    const entry = patientData.find(d => d.id === id);
+    return entry;
 };
 
 export default {
     getDiagonse,
     getNonsensitivePatientEntry,
-    addPatient
+    addPatient,
+    findById
 };

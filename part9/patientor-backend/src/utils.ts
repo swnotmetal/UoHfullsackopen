@@ -7,6 +7,7 @@ const isString = (text: unknown): text is string => {
 const isHumanGender= (param: string): param is Gender => {
     return Object.values(Gender).map(v => v.toString()).includes(param);
   };
+
 const parseName = (name: unknown):string => {
     if(!name || !isString(name)) {
         throw new Error ('Incorrect or missing correct name');
@@ -39,18 +40,20 @@ const parseJob = ( occupation: unknown) :string => {
 };
 
 
+
 const toNewPatientInput = (object: unknown ): NewPatientInput => {
     if (! object || typeof object !== 'object') {
         throw new Error ('Incorrect or missing data');
     }
 
-    if('name' in object && 'dateOfBirth' in object && 'ssn' in object && 'gender' in object && 'occupation' in object) {
+    if('name' in object && 'dateOfBirth' in object && 'ssn' in object && 'gender' in object && 'occupation' in object ) {
     const newEntry: NewPatientInput = {
         name: parseName(object.name),
-        dateOfBirth:parseDoB(object.dateOfBirth),
+        dateOfBirth: parseDoB(object.dateOfBirth),
         ssn: parseSSN(object.ssn),
         gender: parseGender(object.gender),
-        occupation: parseJob(object.occupation)
+        occupation: parseJob(object.occupation),
+        entries: []
     };
     return newEntry;
     }
