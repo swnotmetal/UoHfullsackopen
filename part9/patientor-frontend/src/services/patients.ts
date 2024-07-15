@@ -20,7 +20,12 @@ const create = async (object: PatientFormValues) => {
   return data;
 };
 
+const getOne = async (id: string): Promise<Patient> => {
+  const {data} = await axios.get(`${apiBaseUrl}/patients/${id}`);
+  return data;
+};
+
 export default {
-  getAll, create
+  getAll, create, getOne
 };
 
