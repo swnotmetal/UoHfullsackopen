@@ -3,7 +3,9 @@ import  { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Patient } from '../../types';
 import patientService from '../../services/patients';
-import {Male, Female, Transgender as Other} from '@mui/icons-material';
+import {Male, Female, Transgender as Other, Work,} from '@mui/icons-material';
+import BadgeIcon from '@mui/icons-material/Badge';
+import { Box, Typography } from '@mui/material';
 
 const PatientPage = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -19,12 +21,11 @@ const PatientPage = () => {
     fetchPatient();
   }, [id]);
 
-  if (!patient) {
-    return <div>Loading...</div>;
-  }
+  const GenderIcons =({gender}: {gender?: string}) => {
 
-  const Icons =({gender}: {gender: string}) => {
-    switch(gender.toLocaleLowerCase() ) {
+    if (!gender) return null;
+
+    switch(gender.toLowerCase() ) {
       case 'male':
         return <Male />;
       case 'female':
@@ -33,19 +34,28 @@ const PatientPage = () => {
         return <Other />;
     }
   };
-
-  return (
-    <div>
-      <h2>{patient?.name}</h2> 
-      <p>
-        <Icons gender={patient?.gender || ''} />
-        {patient?.gender}
-        </p>
-      <p>ssn: {patient?.ssn}</p>
-      <p>Occupation: {patient?.occupation}</p>
-
-    </div>
-  );
+ const IconWithText = ({ Icon, text }: { Icon: React.ElementType, text?: string }) => (
+  <Box display="flex" alignItems="center" marginY={1}>
+    <Icon gender={text} />
+    <Typography variant="body1" style={{ marginLeft: '8px' }}>
+      {text || 'Unknown'}
+    </Typography>
+  </Box>
+);
+return (
+  <div>
+    {patient ? (
+      <>
+        <h2>{patient.name}</h2> 
+        <IconWithText Icon={GenderIcons} text={patient.gender} />
+        <IconWithText Icon={BadgeIcon} text={patient.ssn} />
+        <IconWithText Icon={Work} text={patient.occupation} />
+      </>
+    ) : (
+      <p>Loading...</p>
+    )}
+  </div>
+);
 };
 
 export default PatientPage;
