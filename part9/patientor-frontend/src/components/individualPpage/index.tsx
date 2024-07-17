@@ -1,25 +1,32 @@
 
 import  { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Patient } from '../../types';
+import {  Patient, Diagnosis } from '../../types';
 import patientService from '../../services/patients';
 import {Male, Female, Transgender as Other, Work,} from '@mui/icons-material';
 import BadgeIcon from '@mui/icons-material/Badge';
 import { Box, Typography } from '@mui/material';
 
-const PatientPage = () => {
+interface Props {
+  diagnoses: Diagnosis[];
+}
+
+const PatientPage = ({diagnoses}: Props) => {
   const [patient, setPatient] = useState<Patient | null>(null);
+
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     const fetchPatient = async () => {
       if (id) {
         const fetchedPatient = await patientService.getOne(id);
+        console.log("Fetched patient:", JSON.stringify(fetchedPatient, null, 2));
         setPatient(fetchedPatient);
       }
     };
     fetchPatient();
   }, [id]);
+
 
   const GenderIcons =({gender}: {gender?: string}) => {
 
@@ -32,8 +39,16 @@ const PatientPage = () => {
         return <Female />;
       case 'other':
         return <Other />;
+      default:
+        return null;
     }
   };
+
+ const diagnosisInfo = (code: string): string => {
+  const diagnosis = diagnoses.find(d => d.code === code);
+  return diagnosis ? ` ${diagnosis.name}` : '';
+ };
+
  const IconWithText = ({ Icon, text }: { Icon: React.ElementType, text?: string }) => (
   <Box display="flex" alignItems="center" marginY={1}>
     <Icon gender={text} />
@@ -54,7 +69,23 @@ return (
     ) : (
       <p>Loading...</p>
     )}
-  </div>
+  <div>
+  <h4>Entries</h4>
+  {patient?.entries?.map((p) => (
+    <div key={p.id}>
+      <p>{p.date}</p>
+      <p>{p.description}</p>
+      <ul>
+      {p.diagnosisCodes?.map(code => (
+        <li key={code}>
+          {code} {diagnosisInfo(code)}
+        </li>
+      ))}
+      </ul>
+    </div>
+  ))}
+</div>
+</div>
 );
 };
 
