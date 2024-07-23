@@ -4,15 +4,15 @@ import { Route, Link, Routes } from "react-router-dom";
 import { Button, Divider, Container, Typography } from '@mui/material';
 
 import { apiBaseUrl } from "./constants";
-import { Diagnosis, Patient } from "./types";
+import { DiagnoseEntry, PatientEntry } from "./types";
 
 import patientService from "./services/patients";
 import PatientListPage from "./components/PatientListPage";
 import PatientPage from './components/individualPpage';
 
 const App = () => {
-  const [patients, setPatients] = useState<Patient[]>([]);
-  const [diagnose, setDiagnose] = useState<Diagnosis[]>([]);
+  const [patients, setPatients] = useState<PatientEntry[]>([]);
+  const [diagnose, setDiagnose] = useState<DiagnoseEntry[]>([]);
 
   useEffect(() => {
     void axios.get<void>(`${apiBaseUrl}/ping`);

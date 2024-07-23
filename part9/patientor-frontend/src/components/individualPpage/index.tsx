@@ -1,20 +1,34 @@
 
 import  { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import {  Patient, Diagnosis, Entry } from '../../types';
+import {  PatientEntry, DiagnoseEntry, Entry, HospitalEntryWithoutId } from '../../types';
 import patientService from '../../services/patients';
 import {Male, Female, Transgender as Other, Work, LocalHospital, MedicalServicesRounded} from '@mui/icons-material';
 import BadgeIcon from '@mui/icons-material/Badge';
 
-import { Box,Typography, Card, CardContent, List, ListItem, ListItemText, Chip } from '@mui/material';
+import { Box,Typography, Card, CardContent, List, ListItem, ListItemText, Chip, Button } from '@mui/material';
 import React from 'react';
+import AddEntryModal from '../AddEntryModal';
 
 interface Props {
-  diagnoses: Diagnosis[];
+
+  diagnoses: DiagnoseEntry[];
 }
 
-const PatientPage = ({diagnoses}: Props) => {
-  const [patient, setPatient] = useState<Patient | null>(null);
+
+
+const PatientPage = ({diagnoses }: Props) => {
+  const [patient, setPatient] = useState<PatientEntry | null>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
+
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
 
   const { id } = useParams<{ id: string }>();
 
@@ -27,7 +41,23 @@ const PatientPage = ({diagnoses}: Props) => {
       }
     };
     fetchPatient();
+    setModalOpen(false);
   }, [id]);
+
+  const handleEntrySubmit = async (values: HospitalEntryWithoutId) => {
+    try {
+      if(patient) {
+        const updatedPatient = await patientService.addEntry(patient.id, values);
+        setPatient({...patient, entries: patient.entries.concat(updatedPatient)});
+        closeModal();
+      }
+      
+    } catch (error) {
+      console.log('%cerror patientor-frontend/src/components/individualPpage/index.tsx line:55 ', 'color: red; display: block; width: 100%;', error);
+      setError('entry adding failed');
+    }
+
+  };
 
 
   const GenderIcons =({gender}: {gender?: string}) => {
@@ -125,6 +155,17 @@ return (
   ) : (
     <Typography>Loading...</Typography>
   )}
+
+  <AddEntryModal 
+
+  modalOpen={modalOpen}
+  onSubmit={handleEntrySubmit}
+  error={error}
+  onClose={closeModal}
+  />
+  <Button variant="contained" onClick={() => openModal()}>
+        Add New Entry
+  </Button>
 </div>
  );
 };

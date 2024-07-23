@@ -3,7 +3,7 @@ import patientData from '../../data/patients';
 import { v1 as uuid } from 'uuid';
 
 
-import { DiagnoseEntry, NewPatientInput, NoSsnPatient, PatientEntry } from '../types';
+import { DiagnoseEntry, EntryWithoutId, NewPatientInput, NoSsnPatient, PatientEntry, Entry } from '../types';
 
 const getDiagonse = (): DiagnoseEntry[] => {
     return diagnosedata;
@@ -35,9 +35,24 @@ const findById = (id: string): PatientEntry | undefined => {
     return entry;
 };
 
+const addEntry = (entry: EntryWithoutId, patient: PatientEntry ): Entry => {
+    console.log('Adding entry with diagnosis codes:', entry.diagnosisCodes);
+    const id: string = uuid();
+    const newEntry = {
+        id,
+        ...entry,
+    };
+    patient.entries.push(newEntry);
+    return newEntry;
+
+};
+
+
+
 export default {
     getDiagonse,
     getNonsensitivePatientEntry,
     addPatient,
-    findById
+    findById,
+    addEntry
 };
