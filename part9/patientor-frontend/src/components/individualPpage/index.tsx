@@ -1,7 +1,7 @@
 
 import  { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import {  PatientEntry, DiagnoseEntry, Entry, HospitalEntryWithoutId } from '../../types';
+import {  PatientEntry, DiagnoseEntry, Entry,EntryWithoutId } from '../../types';
 import patientService from '../../services/patients';
 import {Male, Female, Transgender as Other, Work, LocalHospital, MedicalServicesRounded} from '@mui/icons-material';
 import BadgeIcon from '@mui/icons-material/Badge';
@@ -44,7 +44,7 @@ const PatientPage = ({diagnoses }: Props) => {
     setModalOpen(false);
   }, [id]);
 
-  const handleEntrySubmit = async (values: HospitalEntryWithoutId) => {
+  const handleEntrySubmit = async (values: EntryWithoutId) => {
     try {
       if(patient) {
         const updatedPatient = await patientService.addEntry(patient.id, values);
@@ -112,7 +112,12 @@ const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
           <span style={{ marginLeft: '8px' }}>{entry.date}</span>
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {entry.description}
+          Description: {entry.description}
+          <br />
+          Specialist: {entry.specialist}
+          <br />
+          Type: {entry.type}
+
         </Typography>
         {entry.diagnosisCodes && (
           <List dense>
@@ -129,6 +134,20 @@ const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
               </ListItem>
             ))}
           </List>
+        )}
+
+        {entry.type === "HealthCheck" && (
+          <Typography variant="body2" color="text.secondary">Health Check Rating: {entry.healthCheckRating}</Typography>
+        )}
+        {entry.type === "Hospital" && (
+          <Typography variant="body2" color="text.secondary">
+            Discharge: {entry.discharge.date} - {entry.discharge.criteria}
+          </Typography>
+        )}
+        {entry.type === "OccupationalHealthcare" && entry.sickLeave && (
+          <Typography variant="body2" color="text.secondary">
+            Sick Leave: {entry.sickLeave.startDate} to {entry.sickLeave.endDate}
+          </Typography>
         )}
       </CardContent>
     </Card>

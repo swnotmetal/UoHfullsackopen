@@ -1,12 +1,12 @@
 import { Dialog, DialogTitle, DialogContent, Divider, Alert } from '@mui/material';
 import AddEntryForm from './AddEntryForm';
 
-import { HospitalEntryWithoutId } from "../../types";
+import { EntryWithoutId} from "../../types";
 
 interface Props {
   modalOpen: boolean;
   onClose: () => void;
-  onSubmit: (values: HospitalEntryWithoutId) => void;
+  onSubmit: (values: EntryWithoutId) => void;
   error?: string;
 }
 

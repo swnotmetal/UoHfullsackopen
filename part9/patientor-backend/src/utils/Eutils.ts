@@ -109,7 +109,7 @@ const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating =
 };
 
 const inputNewEntry = (object: unknown): EntryWithoutId => {
-    console.log('checking input:',object);
+    console.log('checking input in typeguard function:', object);
     if (! object || typeof object !== 'object') {
         throw new Error ('Incorrect or missing data');
     }
@@ -138,11 +138,11 @@ const inputNewEntry = (object: unknown): EntryWithoutId => {
 
     switch (object.type) {
         case "HealthCheck":
-            if('healthCheckingRating' in object ) {
+            if('healthCheckRating' in object ) {
               const healthCheckEntry: EntryWithoutId = {
                 ...baseEntry,
                 type: "HealthCheck",
-                healthCheckRating: parseHealthCheckRating(object.healthCheckingRating)
+                healthCheckRating: parseHealthCheckRating(object.healthCheckRating)
               };
               return healthCheckEntry;
             }
